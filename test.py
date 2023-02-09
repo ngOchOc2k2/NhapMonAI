@@ -21,6 +21,13 @@ drawing_mode = 'freedraw'
 stroke_width = st.sidebar.slider("Stroke width: ", 1, 25, 9)
 drawing_mode = 'freedraw'
 
+
+def soft_index(label):
+    idic = np.argsort(label)[::1][:3]
+    ax = np.sort(label)[::-1]
+    return idic, ax
+        
+    
 with col[0]:
     canvas_result = st_canvas(
         stroke_width=stroke_width,
@@ -42,5 +49,9 @@ if canvas_result.image_data is not None:
     st.write(x_img.shape)
     st.image(x_img)
     label = models.predict(x_ori)
+    
+    idic, ax = soft_index(label)
+    st.write(ax)
     with col[1]:
-        st.success('#### Accuracy is: ' + word_dict[np.argmax(label)])
+        for i in range(3):
+            st.success('#### Accuracy is: ' + word_dict[idic[0, 25 - i]] + "\ntop " + str(i+1) + ": " + str(ax[0, 25 - i] * 100) + "%")
